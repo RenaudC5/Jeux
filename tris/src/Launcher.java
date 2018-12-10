@@ -11,12 +11,14 @@ public class Launcher {
     public static void main(String args[]) {
 		p1 = new Panneau(800, 600);
         testComponent("tris", p1);
-
-        for(int i=0;i<100;i++){
+        int index = 0;
+        for(int i=0;i<1000000;i++){
 
                 try{
-					Thread.currentThread().sleep(25);
+					Thread.currentThread().sleep(50);
           p1.sortMax(i);
+          //p1.bogoSort();
+          //index = p1.bubbleSort(index);
 				} catch (Exception e){
 					e.printStackTrace();
 					}

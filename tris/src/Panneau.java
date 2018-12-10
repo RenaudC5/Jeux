@@ -50,36 +50,75 @@ public class Panneau extends JPanel{
       }
     }
 
-    public void sortMax(int i){
-      int max = 0;
-      int index = 100-i;
-
-      for(int j=0;j<this.nombre.length-i;j++){
-        if(this.nombre[j].getHeight() > this.nombre[max].getHeight()) max = j;
-      }
-
-      //on echange les valeurs
-      Tableau temp;
-      System.out.println("index : "+index);
-      System.out.println("this.nombre.length : "+this.nombre.length);
-      temp = this.nombre[index-1];
-      this.nombre[index-1] = this.nombre[max];
-      this.nombre[max] = temp;
-
-      update();
-
-    }
-
 
     public void paint (Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setBackground (Color.WHITE);
         g2.clearRect (0, 0, width, height);
 
-        g2.setColor(this.nombre[0].getColor());
+
         for(int i=0;i<this.nombre.length;i++){
+          g2.setColor(this.nombre[i].getColor());
           g2.fillRect(i*7, this.height - this.nombre[i].getHeight(), Tableau.LARGEUR, this.nombre[i].getHeight());
         }
 
     }
+
+    private void invert(int index, int j){
+
+      Tableau temp;
+
+      for(int i=0;i<this.nombre.length;i++){
+        this.nombre[i].setColor(Color.blue);
+      }
+      temp = this.nombre[j];
+      this.nombre[j] = this.nombre[index];
+      this.nombre[index] = temp;
+      this.nombre[index].setColor(Color.red);
+    }
+
+    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%TRI%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    public void sortMax(int i){
+      int max = 0;
+      int index = 100-i;
+      if(i<this.nombre.length){
+        for(int j=0;j<this.nombre.length-i;j++){
+          if(this.nombre[j].getHeight() > this.nombre[max].getHeight()) max = j;
+        }
+        invert(index-1,max);
+      }
+      //on echange les valeurs
+
+
+      update();
+
+    }
+
+    public void bogoSort(){
+      //shuffle
+      int index,j;
+      Random random = new Random();
+        index = random.nextInt(99);
+        j = random.nextInt(99);
+
+        invert(index,j);
+
+        update();
+
+  }
+
+  public int bubbleSort(int i){
+    boolean invert = false;
+    while( !invert && i<this.nombre.length-1){
+      if(this.nombre[i].getHeight() > this.nombre[i+1].getHeight()) {
+        invert(i,i+1);
+        invert = true;
+        if(i>=1) i--;
+      } else i++;
+    }
+    System.out.println(i);
+    update();
+    return i;
+  }
 }
