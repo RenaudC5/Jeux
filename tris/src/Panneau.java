@@ -11,6 +11,8 @@ public class Panneau extends JPanel{
 
     private Tableau[] nombre;
 
+    private boolean pause;
+
 
 
     public Panneau (int width, int height) {
@@ -21,8 +23,10 @@ public class Panneau extends JPanel{
       setPreferredSize(size);
       setDoubleBuffered(true);
 
+      this.pause = false;
       this.nombre = new Tableau[100];
       initNombre();
+
 
     }
 
@@ -32,7 +36,7 @@ public class Panneau extends JPanel{
 
     }
 
-    private void initNombre(){
+    protected void initNombre(){
       for (int i=0; i<this.nombre.length;i++){
         this.nombre[i] = new Tableau(this,i*5,i*8,Color.BLUE);
         //Tableau(Panneau panneau, int height, int x,Color color)
@@ -47,6 +51,7 @@ public class Panneau extends JPanel{
         this.nombre[i] = this.nombre[index];
         this.nombre[index] = temp;
 
+
       }
     }
 
@@ -55,6 +60,7 @@ public class Panneau extends JPanel{
         Graphics2D g2 = (Graphics2D) g;
         g2.setBackground (Color.WHITE);
         g2.clearRect (0, 0, width, height);
+        System.out.println("repaint");
 
 
         for(int i=0;i<this.nombre.length;i++){
@@ -71,28 +77,41 @@ public class Panneau extends JPanel{
       for(int i=0;i<this.nombre.length;i++){
         this.nombre[i].setColor(Color.blue);
       }
+
       temp = this.nombre[j];
       this.nombre[j] = this.nombre[index];
       this.nombre[index] = temp;
       this.nombre[index].setColor(Color.red);
     }
 
-    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%TRI%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     public void sortMax(int i){
       int max = 0;
       int index = 100-i;
       if(i<this.nombre.length){
-        for(int j=0;j<this.nombre.length-i;j++){
+        for(int j=0;j<this.nombre.length;j++){
           if(this.nombre[j].getHeight() > this.nombre[max].getHeight()) max = j;
         }
         invert(index-1,max);
       }
       //on echange les valeurs
-
-
       update();
+    }
 
+    public void sortMin(int i){
+      int min = 0;
+      int index = i;
+      if(i<this.nombre.length){
+        for(int j=0;j<this.nombre.length-1;j++){
+          if(this.nombre[j].getHeight() < this.nombre[min].getHeight()){
+            min = j;
+          }
+        }
+        invert(index,min);
+      }
+      //on echange les valeurs
+      update();
     }
 
     public void bogoSort(){
