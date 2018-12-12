@@ -8,30 +8,28 @@ public class Launcher {
 
     private static Panneau p1;
     private static boolean pause;
-    private static int j;
+    protected static int j;
 
-    private static final String TRI = "MAX";
+    private static final String TRI = "INSERTION";
 
     public static void main(String args[]) {
 		p1 = new Panneau(800, 600);
         testComponent("tris", p1);
         for(int i=0;i<1000000;i++){
 
-                try{
-
-					Thread.currentThread().sleep(500);
-
           switch(Launcher.TRI){
             case "MAX" :
               if(!Launcher.pause) {
+
+                p1.sortMax();
                 Launcher.j++;
-                p1.sortMax(i);
               }
               break;
             case "MIN" :
               if(!Launcher.pause) {
+
+                p1.sortMin();
                 Launcher.j++;
-                p1.sortMin(j);
               }
               break;
             case "BONGO" :
@@ -44,12 +42,18 @@ public class Launcher {
                 Launcher.j = p1.bubbleSort(Launcher.j);
               }
               break;
+            case "QWICK" :
+              if(!Launcher.pause) {
+                p1.sort(0,99);
+              }
+              break;
+            case "INSERTION" :
+              if(!Launcher.pause) {
+                p1.insertion();
+                Launcher.j++;
+              }
+              break;
             }
-          //p1.bogoSort();
-          //index = p1.bubbleSort(index);
-				} catch (Exception e){
-					e.printStackTrace();
-				}
       }
     }
 
@@ -73,6 +77,7 @@ public class Launcher {
                 Dimension size = jFrame.getSize ();
                 jFrame.setLocation ((screenSize.width - size.width)/4, (screenSize.height - size.height)/4);
                 jFrame.setSize(new Dimension(800, 800));
+                jFrame.getContentPane().setBackground( Color.black );
                 jFrame.setVisible (true);
 
 
@@ -89,4 +94,6 @@ public class Launcher {
       Launcher.p1.initNombre();
       Launcher.j = 0;
     }
+
+
 }

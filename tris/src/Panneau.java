@@ -38,7 +38,7 @@ public class Panneau extends JPanel{
 
     protected void initNombre(){
       for (int i=0; i<this.nombre.length;i++){
-        this.nombre[i] = new Tableau(this,i*5,i*8,Color.BLUE);
+        this.nombre[i] = new Tableau(this,i*5,i*8,Color.WHITE);
         //Tableau(Panneau panneau, int height, int x,Color color)
       }
       //shuffle
@@ -58,7 +58,7 @@ public class Panneau extends JPanel{
 
     public void paint (Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setBackground (Color.WHITE);
+        g2.setBackground (Color.BLACK);
         g2.clearRect (0, 0, width, height);
         System.out.println("repaint");
 
@@ -75,7 +75,7 @@ public class Panneau extends JPanel{
       Tableau temp;
 
       for(int i=0;i<this.nombre.length;i++){
-        this.nombre[i].setColor(Color.blue);
+        this.nombre[i].setColor(Color.WHITE);
       }
 
       temp = this.nombre[j];
@@ -86,32 +86,38 @@ public class Panneau extends JPanel{
 
     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    public void sortMax(int i){
-      int max = 0;
-      int index = 100-i;
-      if(i<this.nombre.length){
-        for(int j=0;j<this.nombre.length;j++){
-          if(this.nombre[j].getHeight() > this.nombre[max].getHeight()) max = j;
-        }
-        invert(index-1,max);
-      }
-      //on echange les valeurs
-      update();
-    }
+    public void sortMax(){
+      int max = this.nombre.length-1;
 
-    public void sortMin(int i){
-      int min = 0;
-      int index = i;
-      if(i<this.nombre.length){
-        for(int j=0;j<this.nombre.length-1;j++){
-          if(this.nombre[j].getHeight() < this.nombre[min].getHeight()){
-            min = j;
+      if(Launcher.j < this.nombre.length){
+
+        for(int i = Launcher.j;i<this.nombre.length;i++){
+          if(this.nombre[i].getHeight() > this.nombre[max].getHeight()){
+            max = i;
           }
         }
-        invert(index,min);
+
+        invert(Launcher.j,max);
+        this.sleep(50);
       }
-      //on echange les valeurs
-      update();
+        update();
+    }
+
+    public void sortMin(){
+      int min = this.nombre.length-1;
+
+      if(Launcher.j < this.nombre.length){
+
+        for(int i = Launcher.j;i<this.nombre.length;i++){
+          if(this.nombre[i].getHeight() < this.nombre[min].getHeight()){
+            min = i;
+          }
+        }
+
+        invert(Launcher.j,min);
+        this.sleep(50);
+      }
+        update();
     }
 
     public void bogoSort(){
@@ -122,6 +128,7 @@ public class Panneau extends JPanel{
         j = random.nextInt(99);
 
         invert(index,j);
+        this.sleep(20);
 
         update();
 
@@ -132,6 +139,7 @@ public class Panneau extends JPanel{
     while( !invert && i<this.nombre.length-1){
       if(this.nombre[i].getHeight() > this.nombre[i+1].getHeight()) {
         invert(i,i+1);
+        this.sleep(20);
         invert = true;
         if(i>=1) i--;
       } else i++;
@@ -140,4 +148,67 @@ public class Panneau extends JPanel{
     update();
     return i;
   }
+
+  public void insertion(){
+
+    int i, j;
+   for (i = 1; i < this.nombre.length; ++i) {
+       Tableau elem = this.nombre[i];
+       for(int k=0;k<this.nombre.length;k++){
+         this.nombre[k].setColor(Color.WHITE);
+       }
+       elem.setColor(Color.red);
+
+       update();
+       this.sleep(50);
+
+       for (j = i; j > 0 && this.nombre[j-1].getHeight() > elem.getHeight(); j--)
+           this.nombre[j] = this.nombre[j-1];
+           this.nombre[j] = elem;
+
+   }
+  }
+
+
+
+
+
+  private int partition(int low, int high) {
+        int pivot = this.nombre[high].getHeight();
+        int i = (low-1);
+        for (int j=low; j<high; j++){
+            if (this.nombre[j].getHeight() <= pivot){
+                i++;
+
+                // swap this.nombre[i] and this.nombre[j]
+                Tableau temp = this.nombre[i];
+                this.nombre[i] = this.nombre[j];
+                this.nombre[j] = temp;
+                update();
+            }
+        }
+
+        Tableau temp = this.nombre[i+1];
+        this.nombre[i+1] = this.nombre[high];
+        this.nombre[high] = temp;
+
+
+        return i+1;
+    }
+
+    public void sort(int low, int high){
+        if (low < high){
+            int pi = partition(low, high);
+
+            sort(low, pi-1);
+            sort(pi+1, high);
+        }
+    }
+
+    private void sleep(int tps){
+      try{
+        Thread.currentThread().sleep(tps);
+      } catch (Exception e){
+      }
+    }
 }
