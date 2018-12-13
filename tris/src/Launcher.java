@@ -7,54 +7,17 @@ import java.util.Random;
 public class Launcher {
 
     private static Panneau p1;
-    private static boolean pause;
-    protected static int j;
 
-    private static final String TRI = "INSERTION";
+    private static final String TRI = "BONGO";
 
     public static void main(String args[]) {
 		p1 = new Panneau(800, 600);
-        testComponent("tris", p1);
-        for(int i=0;i<1000000;i++){
+      testComponent("tris", p1);
 
-          switch(Launcher.TRI){
-            case "MAX" :
-              if(!Launcher.pause) {
-
-                p1.sortMax();
-                Launcher.j++;
-              }
-              break;
-            case "MIN" :
-              if(!Launcher.pause) {
-
-                p1.sortMin();
-                Launcher.j++;
-              }
-              break;
-            case "BONGO" :
-              if(!Launcher.pause) {
-                p1.bogoSort();
-              }
-              break;
-            case "BUBBLE" :
-              if(!Launcher.pause) {
-                Launcher.j = p1.bubbleSort(Launcher.j);
-              }
-              break;
-            case "QWICK" :
-              if(!Launcher.pause) {
-                p1.sort(0,99);
-              }
-              break;
-            case "INSERTION" :
-              if(!Launcher.pause) {
-                p1.insertion();
-                Launcher.j++;
-              }
-              break;
-            }
+      while(true){
+        p1.insertion();
       }
+
     }
 
     public static final void testComponent (final String title, final Panneau component) {
@@ -63,14 +26,13 @@ public class Launcher {
               //JButton button = new JButton("click me");
               //button.addActionListener(new ShuffleListener(p1));
                 JFrame jFrame = new JFrame(title);
-                jFrame.addKeyListener(new keyPressedListener());
-                Launcher.pause = false;
+                jFrame.addKeyListener(new keyPressedListener(p1));
                 jFrame.addWindowListener (new WindowAdapter() {
                     public void windowClosing (WindowEvent e) {
                         System.exit (0);
                     }
                 });
-                jFrame.getContentPane().add (component, BorderLayout.CENTER);
+                jFrame.getContentPane().add(component, BorderLayout.CENTER);
                 //jFrame.getContentPane().add(button, BorderLayout.SOUTH);
                 jFrame.pack ();
                 Dimension screenSize = Toolkit.getDefaultToolkit ().getScreenSize ();
@@ -83,16 +45,6 @@ public class Launcher {
 
             }
         });
-    }
-
-    protected static void pause(){
-      Launcher.pause = (!Launcher.pause);
-      System.out.println("PAUSE !");
-    }
-
-    protected static void reset(){
-      Launcher.p1.initNombre();
-      Launcher.j = 0;
     }
 
 

@@ -6,14 +6,17 @@ public class keyPressedListener implements KeyListener {
     private Panneau p1;
 
 
-    public keyPressedListener(){
-      System.out.println("init Key pressed listener");
+    public keyPressedListener(Panneau p1){
+      this.p1 = p1;
     }
     public void keyTyped(KeyEvent e) {
 
 
-          Launcher.pause();
-          if(e.getKeyChar() == ' ') Launcher.reset();
+
+          if(e.getKeyChar() == ' ') p1.reset();
+          if(e.getKeyChar() == 'z') {
+            p1.pause();
+          }
 
 
     }

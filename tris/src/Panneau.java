@@ -13,10 +13,13 @@ public class Panneau extends JPanel{
 
     private boolean pause;
 
+    private int cpt;
+
 
 
     public Panneau (int width, int height) {
       this.width = width;
+      this.cpt = 0;
       this.height = height;
       Dimension size = new Dimension (width, height);
       setMinimumSize(size);
@@ -53,6 +56,7 @@ public class Panneau extends JPanel{
 
 
       }
+      update();
     }
 
 
@@ -60,8 +64,6 @@ public class Panneau extends JPanel{
         Graphics2D g2 = (Graphics2D) g;
         g2.setBackground (Color.BLACK);
         g2.clearRect (0, 0, width, height);
-        System.out.println("repaint");
-
 
         for(int i=0;i<this.nombre.length;i++){
           g2.setColor(this.nombre[i].getColor());
@@ -86,10 +88,10 @@ public class Panneau extends JPanel{
 
     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    public void sortMax(){
+    /*public void sortMax(){
       int max = this.nombre.length-1;
 
-      if(Launcher.j < this.nombre.length){
+      if(j < this.nombre.length){
 
         for(int i = Launcher.j;i<this.nombre.length;i++){
           if(this.nombre[i].getHeight() > this.nombre[max].getHeight()){
@@ -98,62 +100,102 @@ public class Panneau extends JPanel{
         }
 
         invert(Launcher.j,max);
-        this.sleep(50);
       }
         update();
-    }
+    }*/
+
+
 
     public void sortMin(){
-      int min = this.nombre.length-1;
+      if(!this.pause){
+        while(this.cpt < this.nombre.length && !(this.pause)){
+          int min = this.nombre.length-1;
 
-      if(Launcher.j < this.nombre.length){
+          if(!this.pause){
+            for(int i = this.cpt;i<this.nombre.length;i++){
 
-        for(int i = Launcher.j;i<this.nombre.length;i++){
-          if(this.nombre[i].getHeight() < this.nombre[min].getHeight()){
-            min = i;
+              if(this.nombre[i].getHeight() < this.nombre[min].getHeight()){
+                min = i;
+              }
+            }
+              invert(this.cpt,min);
+              sleep(50);
+              update();
+              this.cpt++;
+            }
           }
-        }
-
-        invert(Launcher.j,min);
-        this.sleep(50);
       }
-        update();
+    }
+
+    public void sortMax(){
+      sleep(1);
+      //sans la ligne ci dessus, le tri bug (???)
+      if(!this.pause){
+        if(this.cpt <= 0) this.cpt = this.nombre.length-1;
+
+        while(this.cpt > 0 && !(this.pause)){
+
+          int max = 0;
+
+          if(!this.pause){
+            for(int i = this.cpt;i>0;i--){
+
+              if(this.nombre[i].getHeight() > this.nombre[max].getHeight()){
+                max = i;
+              }
+            }
+              invert(this.cpt,max);
+              sleep(50);
+              update();
+              this.cpt--;
+            }
+          }
+      }
     }
 
     public void bogoSort(){
       //shuffle
-      int index,j;
-      Random random = new Random();
-        index = random.nextInt(99);
-        j = random.nextInt(99);
+      sleep(1);
+      if(!pause){
+        int index,j;
+        Random random = new Random();
+          index = random.nextInt(99);
+          j = random.nextInt(99);
 
-        invert(index,j);
-        this.sleep(20);
+          invert(index,j);
+          this.sleep(20);
 
-        update();
-
+          update();
+        }
   }
 
-  public int bubbleSort(int i){
-    boolean invert = false;
-    while( !invert && i<this.nombre.length-1){
-      if(this.nombre[i].getHeight() > this.nombre[i+1].getHeight()) {
-        invert(i,i+1);
-        this.sleep(20);
-        invert = true;
-        if(i>=1) i--;
-      } else i++;
+  public void bubbleSort(){
+
+    sleep(1);
+    if(!pause){
+      if(this.cpt <0) this.cpt = 0;
+      boolean invert = false;
+      while( !invert && this.cpt<this.nombre.length-1){
+        if(this.nombre[this.cpt].getHeight() > this.nombre[this.cpt+1].getHeight()) {
+          invert(this.cpt,this.cpt+1);
+          this.sleep(10);
+          invert = true;
+          if(this.cpt>=1) this.cpt--;
+        } else this.cpt++;
+      }
+      update();
     }
-    System.out.println(i);
-    update();
-    return i;
   }
 
   public void insertion(){
 
-    int i, j;
-   for (i = 1; i < this.nombre.length; ++i) {
-       Tableau elem = this.nombre[i];
+    int j;
+   while(cpt < this.nombre.length){
+     sleep(1);
+     if(this.cpt < 0) this.cpt = 1;
+     if(!pause){
+
+       Tableau elem = this.nombre[this.cpt];
        for(int k=0;k<this.nombre.length;k++){
          this.nombre[k].setColor(Color.WHITE);
        }
@@ -162,16 +204,15 @@ public class Panneau extends JPanel{
        update();
        this.sleep(50);
 
-       for (j = i; j > 0 && this.nombre[j-1].getHeight() > elem.getHeight(); j--)
-           this.nombre[j] = this.nombre[j-1];
-           this.nombre[j] = elem;
+       for (j = this.cpt; j > 0 && this.nombre[j-1].getHeight() > elem.getHeight(); j--) this.nombre[j] = this.nombre[j-1];
+       if(j>0) this.nombre[j] = elem;
+       else this.nombre[0] = elem;
+        this.cpt++;
+    }
+
 
    }
   }
-
-
-
-
 
   private int partition(int low, int high) {
         int pivot = this.nombre[high].getHeight();
@@ -206,9 +247,21 @@ public class Panneau extends JPanel{
     }
 
     private void sleep(int tps){
+
       try{
         Thread.currentThread().sleep(tps);
       } catch (Exception e){
+        e.printStackTrace();
       }
+    }
+
+    protected void pause(){
+      this.pause = (!this.pause);
+    }
+
+    protected void reset(){
+      initNombre();
+      this.cpt = -1;
+      update();
     }
 }
