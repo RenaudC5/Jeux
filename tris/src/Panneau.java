@@ -12,6 +12,7 @@ public class Panneau extends JPanel{
     private Tableau[] nombre;
 
     private boolean pause;
+    private boolean change;
 
     private int cpt;
 
@@ -27,6 +28,7 @@ public class Panneau extends JPanel{
       setDoubleBuffered(true);
 
       this.pause = false;
+      this.change = false;
       this.nombre = new Tableau[100];
       initNombre();
 
@@ -108,7 +110,8 @@ public class Panneau extends JPanel{
 
     public void sortMin(){
       if(!this.pause){
-        while(this.cpt < this.nombre.length && !(this.pause)){
+          if(this.cpt <= 0) this.cpt = 0;
+        while(this.cpt < this.nombre.length && !(this.pause) && !change){
           int min = this.nombre.length-1;
 
           if(!this.pause){
@@ -133,7 +136,7 @@ public class Panneau extends JPanel{
       if(!this.pause){
         if(this.cpt <= 0) this.cpt = this.nombre.length-1;
 
-        while(this.cpt > 0 && !(this.pause)){
+        while(this.cpt > 0 && !(this.pause) && !change){
 
           int max = 0;
 
@@ -157,16 +160,13 @@ public class Panneau extends JPanel{
       //shuffle
       sleep(1);
       if(!pause){
-        int index,j;
-        Random random = new Random();
-          index = random.nextInt(99);
-          j = random.nextInt(99);
-
-          invert(index,j);
-          this.sleep(20);
-
-          update();
-        }
+        Random rand = new Random();
+        int j = rand.nextInt(this.nombre.length);
+        int i = rand.nextInt(this.nombre.length);
+        invert(j,i);
+        update();
+        this.sleep(10);
+      }
   }
 
   public void bubbleSort(){
@@ -190,7 +190,7 @@ public class Panneau extends JPanel{
   public void insertion(){
 
     int j;
-   while(cpt < this.nombre.length){
+   while(cpt < this.nombre.length && !change){
      sleep(1);
      if(this.cpt < 0) this.cpt = 1;
      if(!pause){
@@ -263,5 +263,9 @@ public class Panneau extends JPanel{
       initNombre();
       this.cpt = -1;
       update();
+    }
+
+    protected void setChange(boolean b){
+      this.change = b;
     }
 }

@@ -14,9 +14,29 @@ public class keyPressedListener implements KeyListener {
 
 
           if(e.getKeyChar() == ' ') p1.reset();
-          if(e.getKeyChar() == 'z') {
-            p1.pause();
+
+          if(e.getKeyChar() == 'b') {
+            p1.reset();
+            Launcher.setTri("BOGO");
+            p1.setChange(true);
           }
+          if(e.getKeyChar() == 'x') {
+            p1.reset();
+            Launcher.setTri("MAX");
+            p1.setChange(true);
+          }
+          if(e.getKeyChar() == 'm') {
+            p1.reset();
+            Launcher.setTri("MIN");
+            p1.setChange(true);
+          }
+          if(e.getKeyChar() == 'i') {
+            p1.reset();
+            Launcher.setTri("INSERTION");
+            p1.setChange(true);
+          }
+
+
 
 
     }
