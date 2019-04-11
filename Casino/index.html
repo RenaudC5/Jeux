@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Black Jack</title>
+      <meta charset="utf-8">
+      <title>ToDoList</title>
+      <link href="style.css" rel="stylesheet"> --->
+
+      <script src="BlackJack.js"></script>
+  </head>
+  <body onload="onload()">
+    <div id="argentPlayer">10000 €</div>
+
+    <div id="dealer">
+      <p>dealer Cards : </p>
+
+      <ul id="dealerCards">
+      </ul>
+      <div id="dealerTotal"></div>
+    </div>
+
+    <div id="player">
+      <p>player Cards : </p>
+      <ul id="playerCards">
+      </ul>
+      <div id="playerTotal"></div>
+    </div>
+
+    <div class="bouttons">
+      <button id="hitButton" type="button" name="hit" onclick="hit()">Hit</button>
+      <button id="stayButton" type="button" name="stay" onclick="stay()">Stay</button>
+      <button id="doubleButton" type="button" name="double" onclick="double()">Double</button>
+      <button id="splitButton" type="button" name="split" onclick="split()" disabled>Split</button>
+      <button id="soloPlaysButton" type="button" name="solo" onclick="decision()" >Decision</button>
+
+      <br>
+
+      <!-- <button type="button" name="playerCard" onclick="playerCard()">append player Cards</button>
+      <button type="button" name="dealerCard" onclick="dealerCard()">append dealer Cards</button> -->
+      <button type="button" name="start" onclick="startGame()">Start Game</button>
+
+
+    </div>
+
+  </body>
+</html>
