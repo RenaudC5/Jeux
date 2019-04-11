@@ -2,6 +2,12 @@ var suits = ["S", "H", "D", "C"];
 var values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
 var deck = new Array();
 
+//money at the start of the game and bet size
+var argent = 50000;
+var mise = 10;
+//if making MARTINGALE techique
+var MARTINGALE = true;
+
 //total for each player
 var playerTotal = 0;
 var dealerTotal = 0;
@@ -13,13 +19,16 @@ var playerWins = 0;
 var dealerWins = 0;
 var playing = true;
 
-//money at the start of the game and bet size
-var argent = 50000;
-var mise = 10;
+
 //boolean for the game
 var blackJack = false;
 var joueurDouble = false;
-var isAce = false;
+
+//boolean to know is there are aces in both players hands
+var isAcePlayer = false;
+var isAceDealer = false;
+
+var dealerHasOneCard = false;
 
 createDeck();
 shuffle();
@@ -33,6 +42,7 @@ function onload() {
 
 function playerCard(){
   playerTotal = playerTotal + deck[currentCard].Weight;
+  if(deck[currentCard].Weight == 11) isAcePlayer = true;
   var carte = deck[currentCard].Value+deck[currentCard].Suit;
   document.getElementById('playerCards').innerHTML += '<li><img src="img/'+carte+'.png" width="100" height="152"></li>';
 
@@ -42,8 +52,19 @@ function playerCard(){
 }
 
 function dealerCard(){
+  if(dealerHasOneCard){
+    var list = document.getElementById("dealerCards");
+     list.removeChild(list.childNodes[1]);
+     dealerHasOneCard = false;
+  }
   var carte = deck[currentCard].Value+deck[currentCard].Suit;
   dealerTotal = dealerTotal + deck[currentCard].Weight;
+  if(deck[currentCard].Weight == 11) isAceDealer = true;
+  if(dealerTotal > 21 && isAceDealer){
+    dealerTotal = dealerTotal - 10;
+    isAceDealer = false;
+  }
+
 
   document.getElementById('dealerCards').innerHTML += '<li><img src="img/'+carte+'.png" width="100" height="152"></li>';
 
@@ -73,6 +94,9 @@ function createDeck(){
 function startGame(){
   blackJack = false;
   joueurDouble = false;
+
+  isAceDealer = false;
+  isAcePlayer = false;
   argent = argent - mise;
   var ul = document.getElementById("playerCards");
   while(ul.firstChild) ul.removeChild(ul.firstChild);
@@ -92,24 +116,29 @@ function startGame(){
   playerCard();
   if(playerTotal) blackJack = true;
   dealerCard();
-
+  dealerHasOneCard = true;
+  //setting grey back for dealers cards
+  document.getElementById('dealerCards').innerHTML += '<li><img src="img/gray_back.png" width="100" height="152"></li>';
 
 }
 
 function endGame(){
   playing = false;
-  if(document.getElementById("dealerCards").getElementsByTagName("li").length == 1) dealerCard();
+  if(dealerHasOneCard) {
+    dealerCard();
+    dealerHasOneCard = false;
+  }
   if(playerTotal > dealerTotal && playerTotal < 22 || playerTotal < dealerTotal && dealerTotal > 21 && playerTotal < 22){ //player win
     if(double) argent = argent + (mise * 2);
     else if(blackJack) argent = argent + (mise * 1,5);
     else argent = argent + mise;
-    mise = 10;
+    if(MARTINGALE) mise = 10;
     playerWins++;
   } else if(playerTotal == dealerTotal){
       if(double) argent = argent + (mise*2);
       else argent = argent + mise;
   } else {
-    mise = mise*2;
+    if (MARTINGALE) mise = mise*2;
     dealerWins++;
   }
 
@@ -120,14 +149,28 @@ function endGame(){
 function hit(){
   playerCard();
   if(playerTotal >= 21) {
-    stay();
+    console.log("player > 21");
+    if(isAcePlayer){
+      console.log("ACE ");
+      playerTotal = playerTotal - 10;
+      isAcePlayer = false;
+      setPlayerTotal();
+    }
+    else stay();
   }
 }
 function stay(){
   document.getElementById("hitButton").disabled = true;
   document.getElementById("stayButton").disabled = true;
   document.getElementById("doubleButton").disabled = true;
-  while(dealerTotal < 16 && playerTotal <= 21) dealerCard();
+  while(dealerTotal < 16 && playerTotal <= 21) {
+    if(dealerTotal > 21 && isAceDealer){
+      dealerTotal = dealerTotal - 10;
+      isAceDealer = false;
+      setDealerTotal();
+    }
+    dealerCard();
+  }
   endGame();
 }
 function double(){
